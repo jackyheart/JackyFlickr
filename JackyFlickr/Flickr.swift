@@ -373,4 +373,9 @@ class Flickr: NSObject {
     {
         return "Boundary-\(NSUUID().uuidString)"
     }
+    
+    func logout() {
+    
+        LoggedInUser.shared.clear()
+    }
 }

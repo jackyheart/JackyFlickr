@@ -16,4 +16,13 @@ class LoggedInUser: NSObject {
     var userID:String = ""
     var username:String = ""
     var fullname:String = ""
+    
+    func clear() {
+    
+        LoggedInUser.shared.oauthToken = ""
+        LoggedInUser.shared.oauthTokenSecret = ""
+        LoggedInUser.shared.userID = ""
+        LoggedInUser.shared.username = ""
+        LoggedInUser.shared.fullname = ""
+    }
 }

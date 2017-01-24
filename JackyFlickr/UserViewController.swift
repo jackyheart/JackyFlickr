@@ -126,6 +126,12 @@ class UserViewController: UIViewController, UICollectionViewDataSource, UIImageP
         self.navigationItem.leftBarButtonItem = logoutBtn
     }
     
+    func clearNavigationButtons() {
+    
+        self.navigationItem.rightBarButtonItem = nil
+        self.navigationItem.leftBarButtonItem = nil
+    }
+    
     func addPhotoTapped(sender:Any) {
     
         let imagePicker = UIImagePickerController()
@@ -137,6 +143,25 @@ class UserViewController: UIViewController, UICollectionViewDataSource, UIImageP
     
     func logout(sender:Any) {
     
+        let alert = UIAlertController(title: NSLocalizedString("Logout", comment: ""), message: NSLocalizedString("Do you want to Logout ?", comment: ""), preferredStyle: .alert)
+        
+        let yesAction = UIAlertAction(title: NSLocalizedString("Yes", comment: ""), style: .default) { (action) in
+            
+            Flickr.shared.logout()
+            
+            self.collectionView.isHidden = true
+            self.loginButton.isHidden = false
+            self.dataArray.removeAll()
+            self.collectionView.reloadData()
+            
+            self.clearNavigationButtons()
+        }
+        alert.addAction(yesAction)
+        
+        let noAction = UIAlertAction(title: NSLocalizedString("No", comment: ""), style: .cancel, handler: nil)
+        alert.addAction(noAction)
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     //MARK: - UIImagePickerControllerDelegate
