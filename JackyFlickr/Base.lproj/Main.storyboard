@@ -169,13 +169,21 @@
                                     <action selector="login:" destination="oFZ-vp-or4" eventType="touchUpInside" id="B5x-BN-HRW"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="H6d-GH-2lm">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="EUD-Yt-ktk"/>
+                                    <constraint firstAttribute="width" constant="20" id="kpV-oj-KX2"/>
+                                </constraints>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="hzc-bs-oDt" firstAttribute="leading" secondItem="9Yx-ga-kbL" secondAttribute="leadingMargin" constant="-16" id="Mcn-2a-aUk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="hzc-bs-oDt" secondAttribute="trailing" constant="-16" id="Sd5-tx-Wj2"/>
                             <constraint firstItem="dGs-BI-Qoe" firstAttribute="centerX" secondItem="9Yx-ga-kbL" secondAttribute="centerX" id="dcU-A0-ELT"/>
+                            <constraint firstItem="H6d-GH-2lm" firstAttribute="centerY" secondItem="9Yx-ga-kbL" secondAttribute="centerY" id="fcH-I6-uDu"/>
                             <constraint firstItem="hzc-bs-oDt" firstAttribute="top" secondItem="jwD-CL-tvT" secondAttribute="bottom" id="hIu-Cc-UN9"/>
+                            <constraint firstItem="H6d-GH-2lm" firstAttribute="centerX" secondItem="9Yx-ga-kbL" secondAttribute="centerX" id="iru-WP-eUY"/>
                             <constraint firstItem="Aze-PL-yJ3" firstAttribute="top" secondItem="hzc-bs-oDt" secondAttribute="bottom" id="k92-cx-Zrq"/>
                             <constraint firstItem="dGs-BI-Qoe" firstAttribute="centerY" secondItem="9Yx-ga-kbL" secondAttribute="centerY" id="nFT-lq-ELt"/>
                         </constraints>
@@ -183,6 +191,7 @@
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="KfT-P5-KpH"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="H6d-GH-2lm" id="e3T-PP-xfg"/>
                         <outlet property="collectionView" destination="hzc-bs-oDt" id="Rc5-OE-hU9"/>
                         <outlet property="loginButton" destination="dGs-BI-Qoe" id="rte-Nv-doB"/>
                     </connections>

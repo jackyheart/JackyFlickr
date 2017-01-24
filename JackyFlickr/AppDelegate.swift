@@ -55,9 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        
-        //TODO: record access token
-        
+                
         //notify observer
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "AccessTokenNotification"), object: tokenDict)
 

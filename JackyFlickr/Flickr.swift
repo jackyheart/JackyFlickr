@@ -79,16 +79,16 @@ class Flickr: NSObject {
     //https://www.flickr.com/services/api/auth.oauth.html
     func login(failure: @escaping (NSError) -> Void) {
         
-        let nonce = Util.random9DigitString()//TODO
+        let nonce = Util.getNonce()
         let timestamp = Int(Date().timeIntervalSince1970)
         let urlSceme = "jackyflickr"
 
         //Getting a Request Token
-        let signatureBaseString:String = "GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3D\(urlSceme)%253A%252F%252F%26oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_version%3D1.0"
+        let signatureBaseString = "GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3D\(urlSceme)%253A%252F%252F%26oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_version%3D1.0"
         
         let signatureHMACSHA1 = Util.getHmacSHA1(key: "\(apiSecret)&", input: signatureBaseString)
         
-        let urlString:String = "https://www.flickr.com/services/oauth/request_token?oauth_nonce=\(nonce)&oauth_timestamp=\(timestamp)&oauth_consumer_key=\(apiKey)&&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_signature=\(signatureHMACSHA1)&oauth_callback=\(urlSceme)://"
+        let urlString = "https://www.flickr.com/services/oauth/request_token?oauth_nonce=\(nonce)&oauth_timestamp=\(timestamp)&oauth_consumer_key=\(apiKey)&&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_signature=\(signatureHMACSHA1)&oauth_callback=\(urlSceme)://"
         
         if let url = URL(string: urlString) {
         
@@ -142,7 +142,7 @@ class Flickr: NSObject {
     
     func requestAcessToken(tokenDict:[String:String], success: @escaping ([String:String]?) -> Void, failure: @escaping (NSError) -> Void) {
     
-        let nonce = Util.random9DigitString()//TODO
+        let nonce = Util.getNonce()
         let timestamp = Int(Date().timeIntervalSince1970)
         
         guard let oauthToken = tokenDict["oauth_token"], let oauthVerifier = tokenDict["oauth_verifier"], let oauthTokenSecret = self.loginResultDict["oauth_token_secret"] else {
@@ -150,12 +150,12 @@ class Flickr: NSObject {
         }
         
         //Getting a Request Token
-        let signatureBaseString:String = "GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Faccess_token&oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_token%3D\(oauthToken)%26oauth_verifier%3D\(oauthVerifier)%26oauth_version%3D1.0"
+        let signatureBaseString = "GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Faccess_token&oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_token%3D\(oauthToken)%26oauth_verifier%3D\(oauthVerifier)%26oauth_version%3D1.0"
         
         let tokenSecret = "\(apiSecret)&\(oauthTokenSecret)"
         let signatureHMACSHA1 = Util.getHmacSHA1(key: tokenSecret, input: signatureBaseString)
         
-        let urlString:String = "https://www.flickr.com/services/oauth/access_token?oauth_nonce=\(nonce)&oauth_timestamp=\(timestamp)&oauth_verifier=\(oauthVerifier)&oauth_consumer_key=\(apiKey)&&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(oauthToken)&oauth_signature=\(signatureHMACSHA1)"
+        let urlString = "https://www.flickr.com/services/oauth/access_token?oauth_nonce=\(nonce)&oauth_timestamp=\(timestamp)&oauth_verifier=\(oauthVerifier)&oauth_consumer_key=\(apiKey)&&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(oauthToken)&oauth_signature=\(signatureHMACSHA1)"
         
         if let url = URL(string: urlString) {
             
@@ -198,9 +198,15 @@ class Flickr: NSObject {
                         failure(error)
                         return
                     }
+
+                    if let oauthToken = userDict["oauth_token"], let oauthTokenSecret = userDict["oauth_token_secret"], let userID = userDict["user_nsid"], let username = userDict["username"], let fullname = userDict["fullname"] {
                     
-                    //For demo purpose and for simplicity, store access token to User Defaults
-                    UserDefaults.standard.set(oauthToken, forKey: "access_token")
+                        LoggedInUser.shared.oauthToken = oauthToken
+                        LoggedInUser.shared.oauthTokenSecret = oauthTokenSecret
+                        LoggedInUser.shared.userID = userID
+                        LoggedInUser.shared.username = username
+                        LoggedInUser.shared.fullname = fullname
+                    }
                     
                     print("login success !")
                     print("resultArray: \(resultArray)")
@@ -212,15 +218,13 @@ class Flickr: NSObject {
         }
     }
     
-    func retrieveUserPhotos(userDict:[String:String], complete:@escaping ([FlickrItem]) -> Void) {
+    func retrieveUserPhotos(complete:@escaping ([FlickrItem]) -> Void) {
     
-        let nonce = Util.random9DigitString()//TODO
+        let nonce = Util.getNonce()
         let timestamp = Int(Date().timeIntervalSince1970)
-        
-        guard let userID = userDict["user_nsid"], let oauthToken = userDict["oauth_token"] else {
-            return
-        }
-        
+        let userID = LoggedInUser.shared.userID
+        let oauthToken = LoggedInUser.shared.oauthToken
+
         let page = 1 //TODO
     
         let urlString = "https://flickr.com/services/rest/?method=flickr.people.getPhotos&api_key=\(apiKey)&user_id=\(userID)&page=\(page)&per_page=20&format=json&nojsoncallback=1&oauth_nonce=\(nonce)&oauth_consumer_key=\(apiKey)&oauth_timestamp=\(timestamp)&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(oauthToken)"
@@ -276,5 +280,97 @@ class Flickr: NSObject {
     
     private func constructFlickrImageURLPath(server:String, imageID:String, secret:String) -> String {
         return "https://farm2.staticflickr.com/\(server)/\(imageID)_\(secret).jpg"
+    }
+    
+    //http://www.kaleidosblog.com/how-to-upload-images-using-swift-2-send-multipart-post-request
+    func uploadImage(image:UIImage, completion: @escaping (NSError?) -> Void) {
+        
+        guard let url = URL(string: "https://up.flickr.com/services/upload/?") else {
+            
+            let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Error Uploading Image. Please try again."])
+            completion(error)
+            return
+        }
+        
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let boundary = generateBoundaryString()
+        
+        //define the multipart request type
+        
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        let image_data = UIImageJPEGRepresentation(image,0.3)
+        
+        if(image_data == nil)
+        {
+            let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Can't convert image to data. Please try again."])
+            completion(error)
+            return
+        }
+        
+        let nonce = Util.getNonce()
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let oauthToken = LoggedInUser.shared.oauthToken
+        let oauthTokenSecret = LoggedInUser.shared.oauthTokenSecret
+        
+        let signatureBaseString = "POST&https%3A%2F%2Fup.flickr.com%2Fservices%2Fupload%2F&oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_token%3D\(oauthToken)%26oauth_version%3D1.0"
+        
+        let tokenSecret = "\(apiSecret)&\(oauthTokenSecret)"
+        let signatureHMACSHA1 = Util.getHmacSHA1(key: tokenSecret, input: signatureBaseString)
+        
+        let params = ["oauth_consumer_key":"\(apiKey)",
+                      "oauth_nonce":nonce,
+                      "oauth_timestamp":"\(timestamp)",
+                      "oauth_signature_method":"HMAC-SHA1",
+                      "oauth_version":"1.0",
+                      "oauth_token":oauthToken,
+                      "oauth_signature":signatureHMACSHA1]
+        
+        let fname = "\(timestamp).jpg"
+        let mimetype = "image/jpeg"
+        
+        //define the data post parameter
+        let body = NSMutableData()
+        
+        for (key, value) in params {
+            body.append("--\(boundary)\r\n".data(using: String.Encoding.utf8)!)
+            body.append("Content-Disposition:form-data; name=\"\(key)\"\r\n\r\n".data(using: String.Encoding.utf8)!)
+            body.append("\(value)\r\n".data(using: String.Encoding.utf8)!)
+        }
+        
+        body.append("--\(boundary)\r\n".data(using: String.Encoding.utf8)!)
+        body.append("Content-Disposition:form-data; name=\"photo\"; filename=\"\(fname)\"\r\n".data(using: String.Encoding.utf8)!)
+        body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: String.Encoding.utf8)!)
+        body.append(image_data!)
+        body.append("\r\n".data(using: String.Encoding.utf8)!)
+        body.append("--\(boundary)--\r\n".data(using: String.Encoding.utf8)!)
+
+        request.httpBody = body as Data
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: request as URLRequest) {
+            (
+            data, response, error) in
+            
+            guard let _:Data = data, let _:URLResponse = response, error == nil else {
+                let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Upload error"])
+                completion(error)
+                return
+            }
+            
+            let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+            print(dataString)
+            
+            completion(nil)
+        }
+        
+        task.resume()
+    }
+    
+    func generateBoundaryString() -> String
+    {
+        return "Boundary-\(NSUUID().uuidString)"
     }
 }

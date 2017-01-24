@@ -45,5 +45,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow app to access Photo Library to upload photos to Flickr</string>
 </dict>
 </plist>

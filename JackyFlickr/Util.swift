@@ -41,24 +41,20 @@ class Util: NSObject {
         return String(hmacBase64)
     }
     
-    //http://stackoverflow.com/questions/39515173/how-to-use-unsafemutablepointer-in-swift-3
     static func getNonce() -> String {
-    
-        var data = Data(count: 64)
-        _ = data.withUnsafeMutableBytes { (unsafeMutablePointer) in
-            SecRandomCopyBytes(kSecRandomDefault, data.count, unsafeMutablePointer)
-        }
-        
-        let base64String = data.base64EncodedString(options: Data.Base64EncodingOptions.endLineWithCarriageReturn)
-
-        return base64String
-    }
-    
-    //TODO
-    static func random9DigitString() -> String {
         let min: UInt32 = 100_000_000
         let max: UInt32 = 999_999_999
         let i = min + arc4random_uniform(max - min + 1)
         return String(i)
+    }
+    
+    static func configureAlert(withTitle title:String, message:String) -> UIAlertController {
+    
+        let alert = UIAlertController(title: NSLocalizedString(title, comment: ""), message: NSLocalizedString(message, comment: ""), preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
+        alert.addAction(okAction)
+        
+        return alert
     }
 }
