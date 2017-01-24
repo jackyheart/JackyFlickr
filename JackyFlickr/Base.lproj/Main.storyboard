@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="CLm-J4-SRI">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="CLm-J4-SRI">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,7 +21,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="UYL-Vm-uGl" kind="relationship" relationship="viewControllers" id="n19-2z-aWi"/>
-                        <segue destination="oFZ-vp-or4" kind="relationship" relationship="viewControllers" id="biL-zH-Bmf"/>
+                        <segue destination="e3a-J9-d8q" kind="relationship" relationship="viewControllers" id="biL-zH-Bmf"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="E2F-HT-Hq2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -38,21 +41,35 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cIX-7S-Uuf">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nXG-x1-dF1">
-                                    <size key="itemSize" width="178" height="166"/>
+                                    <size key="itemSize" width="180" height="180"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="IcK-2T-2QF">
-                                        <rect key="frame" x="0.0" y="0.0" width="178" height="166"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="178" height="166"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hxZ-bB-S8s">
+                                                    <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
+                                                </imageView>
+                                            </subviews>
                                         </view>
+                                        <constraints>
+                                            <constraint firstItem="hxZ-bB-S8s" firstAttribute="top" secondItem="IcK-2T-2QF" secondAttribute="topMargin" constant="-8" id="6ES-yY-hNv"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="hxZ-bB-S8s" secondAttribute="trailing" constant="-8" id="DaZ-iD-nfp"/>
+                                            <constraint firstItem="hxZ-bB-S8s" firstAttribute="leading" secondItem="IcK-2T-2QF" secondAttribute="leadingMargin" constant="-8" id="IPg-4Q-F1m"/>
+                                            <constraint firstItem="hxZ-bB-S8s" firstAttribute="leading" secondItem="IcK-2T-2QF" secondAttribute="leadingMargin" constant="-8" id="Kox-Qx-z1D"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="hxZ-bB-S8s" secondAttribute="bottom" constant="-8" id="deX-Ka-OJ7"/>
+                                            <constraint firstItem="hxZ-bB-S8s" firstAttribute="leading" secondItem="IcK-2T-2QF" secondAttribute="leadingMargin" constant="-8" id="kmR-Lg-tWM"/>
+                                        </constraints>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -72,11 +89,11 @@
             </objects>
             <point key="canvasLocation" x="388" y="-608.54572713643188"/>
         </scene>
-        <!--Item-->
+        <!--Public-->
         <scene sceneID="BGI-KU-ssq">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="UYL-Vm-uGl" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="sAf-CO-7F9"/>
+                    <tabBarItem key="tabBarItem" title="Public" id="sAf-CO-7F9"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="9xi-u4-r59">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -91,7 +108,7 @@
             </objects>
             <point key="canvasLocation" x="-359" y="-608"/>
         </scene>
-        <!--Item-->
+        <!--View Controller-->
         <scene sceneID="74o-6J-RGa">
             <objects>
                 <viewController id="oFZ-vp-or4" sceneMemberID="viewController">
@@ -100,16 +117,42 @@
                         <viewControllerLayoutGuide type="bottom" id="Aze-PL-yJ3"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="9Yx-ga-kbL">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dGs-BI-Qoe">
+                                <rect key="frame" x="114" y="248" width="147" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Login to Flickr"/>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <tabBarItem key="tabBarItem" title="Item" id="aVo-Un-mLT"/>
+                    <navigationItem key="navigationItem" id="KfT-P5-KpH"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yee-fA-75N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-359" y="90"/>
+            <point key="canvasLocation" x="388" y="90"/>
+        </scene>
+        <!--User-->
+        <scene sceneID="7rX-nb-BIP">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="e3a-J9-d8q" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="User" id="aVo-Un-mLT"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="L6W-Qj-NX5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="oFZ-vp-or4" kind="relationship" relationship="rootViewController" id="0Tg-4P-WQd"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NnE-PF-gNw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-359.19999999999999" y="89.505247376311857"/>
         </scene>
     </scenes>
 </document>

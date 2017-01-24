@@ -9,6 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    var dataArray:[FlickrItem] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,14 +20,19 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        Flickr.getPublicPhotos(success: { (response) in
+        Flickr.getPublicPhotoFeed(success: { (flickerItems) in
             
-            print("res")
+            self.dataArray = flickerItems
             
-        }) { (error) in
+        }, failure: { (error) in
+        
+            let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
             
-            //TODO: show alert
-        }
+            let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
+            alert.addAction(okAction)
+            
+            self.present(alert, animated: true, completion: nil)
+        })
     }
 
     override func didReceiveMemoryWarning() {
