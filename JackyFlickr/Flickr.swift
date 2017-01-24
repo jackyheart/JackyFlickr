@@ -11,11 +11,13 @@ import UIKit
 let apiKey = "c3c004846488012f97e4e6ef1a37527b"
 let apiSecret = "64f017f1d7603b3f"
 let kErrorDomainFlickr = "FlickrError"
-var loginResultDict:[String:String] = [:]
 
 class Flickr: NSObject {
     
-    static func getPublicPhotoFeed(success: @escaping ([FlickrItem]) -> Void,
+    static let shared = Flickr()//singleton
+    var loginResultDict:[String:String] = [:]
+    
+    func getPublicPhotoFeed(success: @escaping ([FlickrItem]) -> Void,
                          failure:@escaping (NSError) -> Void) {
     
         let urlString = "https://api.flickr.com/services/feeds/photos_public.gne?api_key=\(apiKey)&format=json&nojsoncallback=1"//&lang=en-us
@@ -75,7 +77,7 @@ class Flickr: NSObject {
     }
     
     //https://www.flickr.com/services/api/auth.oauth.html
-    static func login() {
+    func login() {
         
         let nonce = Util.random9DigitString()//TODO
         let timestamp = Int(Date().timeIntervalSince1970)
@@ -109,11 +111,11 @@ class Flickr: NSObject {
                             return
                         }
                         
-                        loginResultDict[splitArray[0]] = splitArray[1]
+                        self.loginResultDict[splitArray[0]] = splitArray[1]
                     }
                     
                     //Getting the User Authorization
-                    if let oauthToken = loginResultDict["oauth_token"] {
+                    if let oauthToken = self.loginResultDict["oauth_token"] {
                     
                         if let url = URL(string: "https://www.flickr.com/services/oauth/authorize?oauth_token=\(oauthToken)") {
                             
@@ -129,7 +131,7 @@ class Flickr: NSObject {
         }
     }
     
-    static func requestAcessToken(dict:[String:String]) {
+    func requestAcessToken(dict:[String:String]) {
     
         let nonce = Util.random9DigitString()//TODO
         let timestamp = Int(Date().timeIntervalSince1970)
@@ -141,9 +143,7 @@ class Flickr: NSObject {
         //Getting a Request Token
         let signatureBaseString:String = "GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Faccess_token&oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_token%3D\(oauthToken)%26oauth_verifier%3D\(oauthVerifier)%26oauth_version%3D1.0"
         
-        var tokenSecret = "\(apiSecret)&"
-        tokenSecret += oauthTokenSecret
-        
+        let tokenSecret = "\(apiSecret)&\(oauthTokenSecret)"
         let signatureHMACSHA1 = Util.getHmacSHA1(key: tokenSecret, input: signatureBaseString)
         
         let urlString:String = "https://www.flickr.com/services/oauth/access_token?oauth_nonce=\(nonce)&oauth_timestamp=\(timestamp)&oauth_verifier=\(oauthVerifier)&oauth_consumer_key=\(apiKey)&&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(oauthToken)&oauth_signature=\(signatureHMACSHA1)"
@@ -157,10 +157,14 @@ class Flickr: NSObject {
                 if let resultString = String(data: data, encoding:.utf8) {
                     
                     let resultArray = resultString.characters.split{$0 == "&"}.map(String.init)
-                    
-                    print("resultArray: \(resultArray)")
+
+                    //sample result:
+                    /*
+                     resultArray: ["fullname=Jacky%20Tjoa", "oauth_token=72157679427529266-c3ae7c17509e7492", "oauth_token_secret=80ed0ab87eb54fea", "user_nsid=126131380%40N05", "username=jacky_coolheart"]
+                     */
                     
                     for result in resultArray {
+                        
                         let splitArray = result.characters.split{$0 == "="}.map(String.init)
                         
                         if (splitArray[0] == "oauth_problem") {
@@ -168,11 +172,54 @@ class Flickr: NSObject {
                             print("oauth_problem: \(splitArray[1])")
                             return
                         }
-                        
-                        
                     }
                     
-                    print("")
+                    //For demo purpose and for simplicity, store access token to User Defaults
+                    UserDefaults.standard.set(oauthToken, forKey: "access_token")
+                    
+                    print("login success !")
+                    print("resultArray: \(resultArray)")
+                }
+                
+            }).resume()
+        }
+    }
+    
+    func testLogin(accessToken:String) {
+        
+        let nonce = Util.random9DigitString()//TODO
+        let timestamp = Int(Date().timeIntervalSince1970)
+        
+        //Test login
+        let signatureBaseString:String = "GET&https%3A%2F%2Fapi.flickr.com%2Fservices%2Frest&format%3Djson%26method%3Dflickr.test.login%26nojsoncallback%3D1%26oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_token%3D\(accessToken)%26oauth_version%3D1.0"
+        
+        let tokenSecret = "\(apiSecret)&"
+        let signatureHMACSHA1 = Util.getHmacSHA1(key: tokenSecret, input: signatureBaseString)
+        
+        let urlString:String = "https://api.flickr.com/services/rest?nojsoncallback=1&oauth_nonce=\(nonce)&format=json&oauth_consumer_key=\(apiKey)&&oauth_timestamp=\(timestamp)&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(accessToken)&oauth_signature=\(signatureHMACSHA1)&method=flickr.test.login"
+        
+        if let url = URL(string: urlString) {
+            
+            URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+                
+                guard let data = data else { return }
+                
+                if let resultString = String(data: data, encoding:.utf8) {
+                
+                    print("resultString: \(resultString)")
+                }
+                
+                do {
+                    
+                    guard let resultDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0)) as? [String: AnyObject]
+                        else {
+                            return
+                    }
+                    
+                    print("resultDict: \(resultDict)")
+                    
+                } catch {
+                    print(error)
                 }
                 
             }).resume()

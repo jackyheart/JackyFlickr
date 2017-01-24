@@ -19,6 +19,11 @@ class LoginViewController: UIViewController {
         
         //observe for access token
         NotificationCenter.default.addObserver(self, selector: #selector(handleAccessTokenNotification(notification:)), name: NSNotification.Name(rawValue: "AccessTokenNotification"), object: nil)
+        
+        if let accessToken = UserDefaults.standard.object(forKey: "access_token") as? String {
+        
+            Flickr.shared.testLogin(accessToken: accessToken)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -38,7 +43,7 @@ class LoginViewController: UIViewController {
     
     @IBAction func login(_ sender: Any) {
     
-        Flickr.login()
+        Flickr.shared.login()
     }
     
     //MARK: - NSNotificationCenter
@@ -49,7 +54,7 @@ class LoginViewController: UIViewController {
             return
         }
         
-        Flickr.requestAcessToken(dict: tokenDict)
+        Flickr.shared.requestAcessToken(dict: tokenDict)
     }
 
     /*
