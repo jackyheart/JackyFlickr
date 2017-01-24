@@ -32,7 +32,7 @@ class Flickr: NSObject {
         URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
             
             guard let data = data else {
-                let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Unparasable data from Flickr"])
+                let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Empty data from Flickr"])
                 failure(error)
                 return
             }
@@ -77,7 +77,7 @@ class Flickr: NSObject {
     }
     
     //https://www.flickr.com/services/api/auth.oauth.html
-    func login() {
+    func login(failure: @escaping (NSError) -> Void) {
         
         let nonce = Util.random9DigitString()//TODO
         let timestamp = Int(Date().timeIntervalSince1970)
@@ -101,6 +101,7 @@ class Flickr: NSObject {
                     let resultArray = resultString.characters.split{$0 == "&"}.map(String.init)
                     
                     //convert array to dictionary
+                    var errorEncountered = false
                     
                     for result in resultArray {
                         let splitArray = result.characters.split{$0 == "="}.map(String.init)
@@ -108,10 +109,18 @@ class Flickr: NSObject {
                         if (splitArray[0] == "oauth_problem") {
                             //don't proceed if there's a problem
                             print("oauth_problem: \(splitArray[1])")
-                            return
+                            errorEncountered = true
+                            break
                         }
                         
                         self.loginResultDict[splitArray[0]] = splitArray[1]
+                    }
+                    
+                    if errorEncountered {
+                    
+                        let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Login failed. Please try again."])
+                        failure(error)
+                        return
                     }
                     
                     //Getting the User Authorization
@@ -131,12 +140,12 @@ class Flickr: NSObject {
         }
     }
     
-    func requestAcessToken(dict:[String:String]) {
+    func requestAcessToken(tokenDict:[String:String], success: @escaping ([String:String]?) -> Void, failure: @escaping (NSError) -> Void) {
     
         let nonce = Util.random9DigitString()//TODO
         let timestamp = Int(Date().timeIntervalSince1970)
         
-        guard let oauthToken = dict["oauth_token"], let oauthVerifier = dict["oauth_verifier"], let oauthTokenSecret = loginResultDict["oauth_token_secret"] else {
+        guard let oauthToken = tokenDict["oauth_token"], let oauthVerifier = tokenDict["oauth_verifier"], let oauthTokenSecret = self.loginResultDict["oauth_token_secret"] else {
             return
         }
         
@@ -152,7 +161,11 @@ class Flickr: NSObject {
             
             URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
             
-                guard let data = data else { return }
+                guard let data = data else {
+                    let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Response data is empty"])
+                    failure(error)
+                    return
+                }
                 
                 if let resultString = String(data: data, encoding:.utf8) {
                     
@@ -163,6 +176,9 @@ class Flickr: NSObject {
                      resultArray: ["fullname=Jacky%20Tjoa", "oauth_token=72157679427529266-c3ae7c17509e7492", "oauth_token_secret=80ed0ab87eb54fea", "user_nsid=126131380%40N05", "username=jacky_coolheart"]
                      */
                     
+                    var userDict:[String:String] = [:]
+                    var errorEncountered = false
+                    
                     for result in resultArray {
                         
                         let splitArray = result.characters.split{$0 == "="}.map(String.init)
@@ -170,8 +186,17 @@ class Flickr: NSObject {
                         if (splitArray[0] == "oauth_problem") {
                             //don't proceed if there's a problem
                             print("oauth_problem: \(splitArray[1])")
-                            return
+                            errorEncountered = true
+                            break
                         }
+                        
+                        userDict[splitArray[0]] = splitArray[1]
+                    }
+                    
+                    if(errorEncountered) {
+                        let error = NSError(domain: kErrorDomainFlickr, code: 0, userInfo: [NSLocalizedFailureReasonErrorKey:"Login failed. Please try again."])
+                        failure(error)
+                        return
                     }
                     
                     //For demo purpose and for simplicity, store access token to User Defaults
@@ -179,50 +204,77 @@ class Flickr: NSObject {
                     
                     print("login success !")
                     print("resultArray: \(resultArray)")
+                    
+                    success(userDict)
                 }
                 
             }).resume()
         }
     }
     
-    func testLogin(accessToken:String) {
-        
+    func retrieveUserPhotos(userDict:[String:String], complete:@escaping ([FlickrItem]) -> Void) {
+    
         let nonce = Util.random9DigitString()//TODO
         let timestamp = Int(Date().timeIntervalSince1970)
         
-        //Test login
-        let signatureBaseString:String = "GET&https%3A%2F%2Fapi.flickr.com%2Fservices%2Frest&format%3Djson%26method%3Dflickr.test.login%26nojsoncallback%3D1%26oauth_consumer_key%3D\(apiKey)%26oauth_nonce%3D\(nonce)%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D\(timestamp)%26oauth_token%3D\(accessToken)%26oauth_version%3D1.0"
+        guard let userID = userDict["user_nsid"], let oauthToken = userDict["oauth_token"] else {
+            return
+        }
         
-        let tokenSecret = "\(apiSecret)&"
-        let signatureHMACSHA1 = Util.getHmacSHA1(key: tokenSecret, input: signatureBaseString)
-        
-        let urlString:String = "https://api.flickr.com/services/rest?nojsoncallback=1&oauth_nonce=\(nonce)&format=json&oauth_consumer_key=\(apiKey)&&oauth_timestamp=\(timestamp)&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(accessToken)&oauth_signature=\(signatureHMACSHA1)&method=flickr.test.login"
+        let page = 1 //TODO
+    
+        let urlString = "https://flickr.com/services/rest/?method=flickr.people.getPhotos&api_key=\(apiKey)&user_id=\(userID)&page=\(page)&per_page=20&format=json&nojsoncallback=1&oauth_nonce=\(nonce)&oauth_consumer_key=\(apiKey)&oauth_timestamp=\(timestamp)&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(oauthToken)"
         
         if let url = URL(string: urlString) {
-            
+        
             URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
                 
-                guard let data = data else { return }
-                
-                if let resultString = String(data: data, encoding:.utf8) {
-                
-                    print("resultString: \(resultString)")
+                guard let data = data else {
+                    print("data is nil")
+                    return
                 }
-                
+
                 do {
                     
-                    guard let resultDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0)) as? [String: AnyObject]
-                        else {
-                            return
+                    if let resultDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0)) as? [String: AnyObject] {
+                    
+                        print("resultDict: \(resultDict)")
+                        
+                        //user feeds
+                        var userFeeds:[FlickrItem] = []
+                        
+                        if let photos = resultDict["photos"] as? [String:Any] {
+                        
+                            if let photoArray = photos["photo"] as? [[String:Any]] {
+                                
+                                for photoItem in photoArray {
+                                
+                                    if let server = photoItem["server"] as? String, let imageID = photoItem["id"] as? String, let secret = photoItem["secret"] as? String {
+                                    
+                                        let urlPath = self.constructFlickrImageURLPath(server: server, imageID: imageID, secret: secret)
+                                        
+                                        let flickrItem = FlickrItem()
+                                        flickrItem.urlString = urlPath
+                                        
+                                        userFeeds.append(flickrItem)
+                                    }
+                                }//end for
+                            }
+                        }
+                        
+                        complete(userFeeds)
                     }
                     
-                    print("resultDict: \(resultDict)")
-                    
-                } catch {
+                }
+                catch {
                     print(error)
                 }
                 
             }).resume()
         }
+    }
+    
+    private func constructFlickrImageURLPath(server:String, imageID:String, secret:String) -> String {
+        return "https://farm2.staticflickr.com/\(server)/\(imageID)_\(secret).jpg"
     }
 }

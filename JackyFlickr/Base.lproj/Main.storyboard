@@ -1,11 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="CLm-J4-SRI">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="CLm-J4-SRI">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -41,7 +38,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cIX-7S-Uuf">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nXG-x1-dF1">
                                     <size key="itemSize" width="180" height="180"/>
@@ -50,16 +46,14 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCellIdentifier" id="IcK-2T-2QF" customClass="PhotoCell" customModule="JackyFlickr" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PublicCellIdentifier" id="IcK-2T-2QF" customClass="PhotoCell" customModule="JackyFlickr" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hxZ-bB-S8s">
-                                                    <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
-                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hxZ-bB-S8s"/>
                                             </subviews>
                                         </view>
                                         <constraints>
@@ -118,10 +112,10 @@
             </objects>
             <point key="canvasLocation" x="-359" y="-608"/>
         </scene>
-        <!--Login View Controller-->
+        <!--User View Controller-->
         <scene sceneID="74o-6J-RGa">
             <objects>
-                <viewController id="oFZ-vp-or4" customClass="LoginViewController" customModule="JackyFlickr" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="oFZ-vp-or4" customClass="UserViewController" customModule="JackyFlickr" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jwD-CL-tvT"/>
                         <viewControllerLayoutGuide type="bottom" id="Aze-PL-yJ3"/>
@@ -130,25 +124,68 @@
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hzc-bs-oDt">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="WYR-LR-5y8">
+                                    <size key="itemSize" width="180" height="180"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="UserCellIdentifier" id="N6g-my-7Ww" customClass="PhotoCell" customModule="JackyFlickr" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="DGI-4H-R54"/>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstItem="DGI-4H-R54" firstAttribute="leading" secondItem="N6g-my-7Ww" secondAttribute="leadingMargin" constant="-8" id="GLN-iJ-ZLc"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="DGI-4H-R54" secondAttribute="bottom" constant="-8" id="GSG-ES-mh4"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="DGI-4H-R54" secondAttribute="trailing" constant="-8" id="jBv-t4-5sf"/>
+                                            <constraint firstItem="DGI-4H-R54" firstAttribute="top" secondItem="N6g-my-7Ww" secondAttribute="topMargin" constant="-8" id="uwM-qC-kEq"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="imgView" destination="DGI-4H-R54" id="QRH-hU-kpc"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="oFZ-vp-or4" id="OaC-0C-HFL"/>
+                                    <outlet property="delegate" destination="oFZ-vp-or4" id="utT-j1-4Qj"/>
+                                </connections>
+                            </collectionView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dGs-BI-Qoe">
-                                <rect key="frame" x="139.5" y="286" width="97" height="30"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" constant="97" id="Tar-1x-pav"/>
                                     <constraint firstAttribute="height" constant="30" id="dRg-mr-muU"/>
                                 </constraints>
                                 <state key="normal" title="Login to Flickr"/>
                                 <connections>
-                                    <action selector="login:" destination="oFZ-vp-or4" eventType="touchUpInside" id="tjr-UA-Fj8"/>
+                                    <action selector="login:" destination="oFZ-vp-or4" eventType="touchUpInside" id="B5x-BN-HRW"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="hzc-bs-oDt" firstAttribute="leading" secondItem="9Yx-ga-kbL" secondAttribute="leadingMargin" constant="-16" id="Mcn-2a-aUk"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="hzc-bs-oDt" secondAttribute="trailing" constant="-16" id="Sd5-tx-Wj2"/>
                             <constraint firstItem="dGs-BI-Qoe" firstAttribute="centerX" secondItem="9Yx-ga-kbL" secondAttribute="centerX" id="dcU-A0-ELT"/>
+                            <constraint firstItem="hzc-bs-oDt" firstAttribute="top" secondItem="jwD-CL-tvT" secondAttribute="bottom" id="hIu-Cc-UN9"/>
+                            <constraint firstItem="Aze-PL-yJ3" firstAttribute="top" secondItem="hzc-bs-oDt" secondAttribute="bottom" id="k92-cx-Zrq"/>
                             <constraint firstItem="dGs-BI-Qoe" firstAttribute="centerY" secondItem="9Yx-ga-kbL" secondAttribute="centerY" id="nFT-lq-ELt"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="KfT-P5-KpH"/>
+                    <connections>
+                        <outlet property="collectionView" destination="hzc-bs-oDt" id="Rc5-OE-hU9"/>
+                        <outlet property="loginButton" destination="dGs-BI-Qoe" id="rte-Nv-doB"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yee-fA-75N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

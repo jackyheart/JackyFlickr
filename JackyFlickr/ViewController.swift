@@ -17,10 +17,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
         Flickr.shared.getPublicPhotoFeed(success: { (flickerItems) in
             
@@ -30,17 +26,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 self.collectionView.reloadData()
             }
             
-        }, failure: { (error) in
-        
-            DispatchQueue.main.async {
-                let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+            }, failure: { (error) in
                 
-                let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
-                alert.addAction(okAction)
-                
-                self.present(alert, animated: true, completion: nil)
-            }
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                    
+                    let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    
+                    self.present(alert, animated: true, completion: nil)
+                }
         })
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,7 +56,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCellIdentifier", for: indexPath) as! PhotoCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PublicCellIdentifier", for: indexPath) as! PhotoCell
         
         let flickrItem = self.dataArray[indexPath.row]
         
