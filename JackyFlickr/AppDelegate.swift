@@ -41,6 +41,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        //▿ jackyflickr://?oauth_token=72157679426078076-c5e33e1c17edc5c1&oauth_verifier=998f84a8dc589a57
+ 
+        var tokenDict:[String:String] = [:]
+        
+        if let queryItems = NSURLComponents(string: url.absoluteString)?.queryItems {
+            for item in queryItems {
+                
+                if let itemValue = item.value {
+                    tokenDict[item.name] = itemValue
+                }
+            }
+        }
+        
+        //TODO: record access token
+        
+        //notify observer
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "AccessTokenNotification"), object: tokenDict)
 
+        return true
+    }
 }
 

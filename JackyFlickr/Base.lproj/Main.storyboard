@@ -118,10 +118,10 @@
             </objects>
             <point key="canvasLocation" x="-359" y="-608"/>
         </scene>
-        <!--View Controller-->
+        <!--Login View Controller-->
         <scene sceneID="74o-6J-RGa">
             <objects>
-                <viewController id="oFZ-vp-or4" sceneMemberID="viewController">
+                <viewController id="oFZ-vp-or4" customClass="LoginViewController" customModule="JackyFlickr" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jwD-CL-tvT"/>
                         <viewControllerLayoutGuide type="bottom" id="Aze-PL-yJ3"/>
@@ -130,20 +130,29 @@
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dGs-BI-Qoe">
-                                <rect key="frame" x="114" y="248" width="147" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dGs-BI-Qoe">
+                                <rect key="frame" x="139.5" y="286" width="97" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="dRg-mr-muU"/>
+                                </constraints>
                                 <state key="normal" title="Login to Flickr"/>
+                                <connections>
+                                    <action selector="login:" destination="oFZ-vp-or4" eventType="touchUpInside" id="tjr-UA-Fj8"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="dGs-BI-Qoe" firstAttribute="centerX" secondItem="9Yx-ga-kbL" secondAttribute="centerX" id="dcU-A0-ELT"/>
+                            <constraint firstItem="dGs-BI-Qoe" firstAttribute="centerY" secondItem="9Yx-ga-kbL" secondAttribute="centerY" id="nFT-lq-ELt"/>
+                        </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="KfT-P5-KpH"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yee-fA-75N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="388" y="90"/>
+            <point key="canvasLocation" x="388" y="89.505247376311857"/>
         </scene>
         <!--User-->
         <scene sceneID="7rX-nb-BIP">
