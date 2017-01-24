@@ -42,10 +42,16 @@ class Util: NSObject {
     }
     
     static func getNonce() -> String {
-        let min: UInt32 = 100_000_000
-        let max: UInt32 = 999_999_999
-        let i = min + arc4random_uniform(max - min + 1)
-        return String(i)
+        
+        let len = 8
+        var str = ""
+        
+        for _ in 0 ..< len {
+            let rand = arc4random_uniform(10)//random number between 0 and 9 (inclusive)
+            str += "\(rand)"
+        }
+        
+        return str
     }
     
     static func configureAlert(withTitle title:String, message:String) -> UIAlertController {
