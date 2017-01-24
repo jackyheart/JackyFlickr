@@ -16,7 +16,7 @@ class UserViewController: UIViewController, UICollectionViewDataSource, UIImageP
     
     var dataArray:[FlickrItem] = []
     let cache = NSCache<NSString, UIImage>()
-    
+    var currentPage = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +64,34 @@ class UserViewController: UIViewController, UICollectionViewDataSource, UIImageP
         }
     }
     
+    //MARK: - User Photo Feed
+    
+    func loadUserPhotos() {
+        
+        self.activityIndicator.startAnimating()
+        
+        Flickr.shared.retrieveUserPhotos(page: self.currentPage, complete: { (items) in
+            
+            DispatchQueue.main.async {
+                
+                self.activityIndicator.stopAnimating()
+                
+                if items.count > 0 {
+                    
+                    if self.currentPage == 1 {
+                        //clear content if it is first page
+                        self.dataArray = items
+                    } else {
+                        self.dataArray.append(contentsOf: items)
+                    }
+                    
+                    self.currentPage = self.currentPage + 1
+                    self.collectionView.reloadData()
+                }
+            }
+        })
+    }
+    
     //MARK: - NSNotificationCenter
     
     func handleAccessTokenNotification(notification:Notification) {
@@ -88,16 +116,8 @@ class UserViewController: UIViewController, UICollectionViewDataSource, UIImageP
                 self.loginButton.isHidden = true
                 self.addNavigationBarButtons()//logout and upload button
                 
-                self.activityIndicator.startAnimating()
-                
-                Flickr.shared.retrieveUserPhotos(complete: { (items) in
-                    
-                    DispatchQueue.main.async {
-                        self.activityIndicator.stopAnimating()
-                        self.dataArray = items
-                        self.collectionView.reloadData()
-                    }
-                })
+                self.currentPage = 1//back to page 1
+                self.loadUserPhotos()
             }
             
         }) { (error) in
@@ -186,21 +206,11 @@ class UserViewController: UIViewController, UICollectionViewDataSource, UIImageP
                     }
                     else {
                         
-                        self.activityIndicator.startAnimating()
+                        let alert = Util.configureAlert(withTitle: "Success", message: "Upload successful")
+                        self.present(alert, animated: true, completion: nil)
                         
-                        Flickr.shared.retrieveUserPhotos(complete: { (items) in
-                            
-                            DispatchQueue.main.async {
-                                
-                                self.activityIndicator.stopAnimating()
-                                
-                                let alert = Util.configureAlert(withTitle: "Success", message: "Upload successful")
-                                self.present(alert, animated: true, completion: nil)
-                                
-                                self.dataArray = items
-                                self.collectionView.reloadData()
-                            }
-                        })
+                        self.currentPage = 1//back to page 1
+                        self.loadUserPhotos()
                     }
                 }//end dispatch
             }
@@ -248,5 +258,19 @@ class UserViewController: UIViewController, UICollectionViewDataSource, UIImageP
         }
 
         return cell
+    }
+    
+    //MARK: - UIScrollViewDelegate
+    
+    //http://stackoverflow.com/questions/39015228/detect-when-uitableview-has-scrolled-to-the-bottom
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        let  height = scrollView.frame.size.height
+        let contentYoffset = scrollView.contentOffset.y
+        let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+        
+        if distanceFromBottom < height {
+            self.loadUserPhotos()
+        }
     }
 }

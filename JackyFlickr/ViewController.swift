@@ -8,19 +8,32 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class ViewController: UIViewController, UICollectionViewDataSource {
     
     @IBOutlet weak var collectionView: UICollectionView!
     var dataArray:[FlickrItem] = []
     let cache = NSCache<NSString, UIImage>()
+    var currentPage = 1
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        self.loadPublicPhotoFeed()
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    //MARK: - Photo Feed
+    
+    func loadPublicPhotoFeed() {
+    
         Flickr.shared.getPublicPhotoFeed(success: { (flickerItems) in
             
-            self.dataArray = flickerItems
+            self.dataArray.append(contentsOf: flickerItems)
             
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -37,11 +50,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                     self.present(alert, animated: true, completion: nil)
                 }
         })
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     //MARK: - UICollectionViewDataSource
@@ -86,6 +94,19 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         return cell
     }
-
+    
+    //MARK: - UIScrollViewDelegate
+    
+    //http://stackoverflow.com/questions/39015228/detect-when-uitableview-has-scrolled-to-the-bottom
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        let  height = scrollView.frame.size.height
+        let contentYoffset = scrollView.contentOffset.y
+        let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+        
+        if distanceFromBottom < height {
+            self.loadPublicPhotoFeed()
+        }
+    }
 }
 

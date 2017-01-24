@@ -218,15 +218,13 @@ class Flickr: NSObject {
         }
     }
     
-    func retrieveUserPhotos(complete:@escaping ([FlickrItem]) -> Void) {
+    func retrieveUserPhotos(page:Int, complete:@escaping ([FlickrItem]) -> Void) {
     
         let nonce = Util.getNonce()
         let timestamp = Int(Date().timeIntervalSince1970)
         let userID = LoggedInUser.shared.userID
         let oauthToken = LoggedInUser.shared.oauthToken
 
-        let page = 1 //TODO
-    
         let urlString = "https://flickr.com/services/rest/?method=flickr.people.getPhotos&api_key=\(apiKey)&user_id=\(userID)&page=\(page)&per_page=20&format=json&nojsoncallback=1&oauth_nonce=\(nonce)&oauth_consumer_key=\(apiKey)&oauth_timestamp=\(timestamp)&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=\(oauthToken)"
         
         if let url = URL(string: urlString) {
