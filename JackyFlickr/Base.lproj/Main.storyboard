@@ -41,7 +41,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cIX-7S-Uuf">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nXG-x1-dF1">
                                     <size key="itemSize" width="180" height="180"/>
@@ -50,7 +50,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="IcK-2T-2QF">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCellIdentifier" id="IcK-2T-2QF" customClass="PhotoCell" customModule="JackyFlickr" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="180" height="180"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -70,8 +70,15 @@
                                             <constraint firstAttribute="bottomMargin" secondItem="hxZ-bB-S8s" secondAttribute="bottom" constant="-8" id="deX-Ka-OJ7"/>
                                             <constraint firstItem="hxZ-bB-S8s" firstAttribute="leading" secondItem="IcK-2T-2QF" secondAttribute="leadingMargin" constant="-8" id="kmR-Lg-tWM"/>
                                         </constraints>
+                                        <connections>
+                                            <outlet property="imgView" destination="hxZ-bB-S8s" id="2Nv-iR-0pe"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="Gv1-wQ-SVo"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Lir-la-Y1i"/>
+                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -79,11 +86,14 @@
                             <constraint firstItem="cIX-7S-Uuf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="EAn-Su-zdF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="cIX-7S-Uuf" secondAttribute="trailing" constant="-16" id="LIJ-6F-VpS"/>
                             <constraint firstItem="cIX-7S-Uuf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-16" id="RkD-FP-omz"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="cIX-7S-Uuf" secondAttribute="bottom" id="WOf-Wa-lZP"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="cIX-7S-Uuf" secondAttribute="bottom" constant="-49" id="WOf-Wa-lZP"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="VSQ-ai-4Ik"/>
+                    <connections>
+                        <outlet property="collectionView" destination="cIX-7S-Uuf" id="1w6-5H-gXe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
